@@ -1,0 +1,57 @@
+# John Doe — CV fixture (test data only)
+#
+# RenderCV-compatible YAML covering the MVP subset: the `cv` header fields
+# (name/headline/location/email/phone), `social_networks`, and the sections
+# `summary`, `experience`, `education`, `skills`.
+#
+# This file is a TEST FIXTURE only — it is never imported by application code
+# (spec: fixture content is not hardcoded in application code).
+
+cv:
+  name: John Doe
+  headline: Software Engineer
+  location: Argentina
+  email: johndoe@example.com
+  phone: "+1 555 010 0000"
+  social_networks:
+    - network: github
+      username: pdgramajo
+    - network: linkedin
+      username: johndoe-fake
+  sections:
+    summary:
+      - Software Engineer with 11 years of experience building web
+        products end to end, from architecture to deployment.
+    experience:
+      - company: Independent
+        position: Software Engineer
+        location: Remote
+        start_date: "2025-12"
+        end_date: present
+        highlights:
+          - Building SaaS products, prototypes, and internal platforms using *React*, *TypeScript*, and *Node.js*.
+          - Leading migrations from legacy codebases to modern, testable architectures.
+      - company: Acme Corp
+        position: Full-Stack Engineer
+        location: Argentina
+        start_date: "2019-08"
+        end_date: "2025-11"
+        highlights:
+          - Delivered the company's core web platform, serving millions of requests per day.
+          - Mentored a team of five engineers on testing and code review practices.
+    education:
+      - institution: Fictional State University
+        area: Systems Engineering
+        location: Argentina
+        start_date: "2008-03"
+        end_date: "2014-12"
+        highlights:
+          - Focused on distributed systems and software architecture.
+    skills:
+      - label: React
+        details: Hooks, server components, state management
+      - label: TypeScript
+        details: Strict typing, type-level design
+      - label: Node.js
+      - label: Python
+      - label: PostgreSQL
