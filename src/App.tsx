@@ -8,6 +8,8 @@ export default function App() {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [resetKey, setResetKey] = useState(0)
+  const [pdfName, setPdfName] = useState<string | null>(null)
 
   const revoke = () => {
     if (pdfUrl) {
@@ -16,10 +18,23 @@ export default function App() {
     }
   }
 
+  const handleReset = () => {
+    revoke()
+    setError(null)
+    setLoading(false)
+    setPdfName(null)
+    // Remounts FileInput so the selected-file chip clears too.
+    setResetKey(k => k + 1)
+  }
+
   const handleFile = async (file: File) => {
     setError(null)
     revoke()
     setLoading(true)
+    // Strip the extension from the source YAML so the PDF download keeps the
+    // same base name: `archivo.yaml` → `archivo.pdf`.
+    const baseName = file.name.replace(/\.[^.]+$/, '')
+    setPdfName(baseName)
     try {
       const text = await file.text()
       const doc = parseRenderCvYaml(text)
@@ -40,7 +55,7 @@ export default function App() {
     if (!pdfUrl) return
     const a = document.createElement('a')
     a.href = pdfUrl
-    a.download = 'rendercv.pdf'
+    a.download = pdfName ? `${pdfName}.pdf` : 'rendercv.pdf'
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -50,7 +65,11 @@ export default function App() {
     if (!pdfUrl) return
     try {
       const bytes = await fetch(pdfUrl).then(r => r.arrayBuffer())
-      const file = new File([bytes], 'rendercv.pdf', { type: 'application/pdf' })
+      const file = new File(
+        [bytes],
+        pdfName ? `${pdfName}.pdf` : 'rendercv.pdf',
+        { type: 'application/pdf' },
+      )
       if (navigator.share && navigator.canShare({ files: [file] })) {
         await navigator.share({ files: [file], title: 'RenderCV PDF' })
       }
@@ -80,7 +99,15 @@ export default function App() {
       <main className="workbench">
         <aside className="workbench__controls">
           <div className="reveal reveal--2">
-            <FileInput onFile={handleFile} disabled={loading} />
+            <FileInput key={resetKey} onFile={handleFile} disabled={loading} />
+            <button
+              type="button"
+              className="btn btn--ghost btn--reset"
+              onClick={handleReset}
+              disabled={!pdfUrl && !error}
+            >
+              Start over
+            </button>
           </div>
 
           {loading && (
@@ -105,6 +132,7 @@ export default function App() {
             <Preview pdfUrl={pdfUrl} />
             <Actions
               pdfUrl={pdfUrl}
+              fileName={pdfName ? `${pdfName}.pdf` : undefined}
               onDownload={handleDownload}
               onShare={handleShare}
               disabled={loading}

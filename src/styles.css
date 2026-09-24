@@ -663,6 +663,14 @@ body::before {
   color: var(--accent);
 }
 
+.btn--reset {
+  margin-top: var(--space-3);
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
 
 /* ---------- footer ---------- */
 

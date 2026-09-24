@@ -1,5 +1,6 @@
 type Props = {
   pdfUrl: string | null
+  fileName?: string
   onDownload: () => void
   onShare?: () => void
   disabled?: boolean
@@ -43,11 +44,11 @@ function ShareIcon() {
   )
 }
 
-export function Actions({ pdfUrl, onDownload, onShare, disabled }: Props) {
+export function Actions({ pdfUrl, fileName, onDownload, onShare, disabled }: Props) {
   if (!pdfUrl) return null
   return (
     <footer className="actions">
-      <span className="actions__meta">rendercv.pdf · compiled locally</span>
+      <span className="actions__meta">{fileName ?? 'rendercv.pdf'} · compiled locally</span>
       <div className="actions__buttons">
         <button className="btn btn--primary" onClick={onDownload} disabled={disabled}>
           <DownloadIcon />
