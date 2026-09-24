@@ -83,4 +83,18 @@ describe('App', () => {
     expect(clicked.download).toBe('archivo.pdf')
     clickSpy.mockRestore()
   })
+
+  it('on coarse-pointer devices shows the viewer hint instead of the iframe preview', async () => {
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({ matches: true })),
+    )
+    render(<App />)
+    pickFile(new File(['name: Test\n'], 'test.yaml', { type: 'text/yaml' }))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('preview-mobile-ready')).toBeInTheDocument()
+    })
+    expect(screen.queryByTestId('pdf-preview')).not.toBeInTheDocument()
+  })
 })

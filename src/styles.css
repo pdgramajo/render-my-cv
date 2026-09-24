@@ -585,6 +585,16 @@ body::before {
   color: var(--ink-faint);
 }
 
+.preview__empty--ready .preview__empty-glyph {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.preview__empty--ready p strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 /* ---------- actions toolbar ---------- */
 
 .actions {
