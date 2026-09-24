@@ -106,10 +106,10 @@ describe('renderCvToTypst — case 3: fixture renders to expected Typst', () => 
     expect(output).toContain('#headline([Software Engineer])');
     expect(output).toContain('#connections(');
     expect(output).toContain(
-      '#connection-with-icon("github", [#link("https://github.com/pdgramajo")[#underline[github.com/pdgramajo]]])',
+      '[#connection-with-icon("github")[#link("https://github.com/pdgramajo")[#underline[github.com/pdgramajo]]]]',
     );
     expect(output).toContain(
-      '#connection-with-icon("linkedin", [#link("https://linkedin.com/in/johndoe-fake")[#underline[linkedin.com/in/johndoe-fake]]])',
+      '[#connection-with-icon("linkedin")[#link("https://linkedin.com/in/johndoe-fake")[#underline[linkedin.com/in/johndoe-fake]]]]',
     );
   });
 

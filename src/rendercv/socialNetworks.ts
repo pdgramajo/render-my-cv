@@ -58,8 +58,11 @@ export function isKnownNetwork(network: string): boolean {
 }
 
 /**
- * One `#connection-with-icon(...)` line for a known network, or `null` for an
- * unknown network (skipped silently).
+ * One `#connection-with-icon(...)` content block for a known network, or
+ * `null` for an unknown network (skipped silently).
+ *
+ * `#connections(...)` receives its items in code context, so each item must
+ * be a content block: `[#connection-with-icon("icon")[#link(...)[...]]]`.
  */
 export function connectionItem(socialNetwork: SocialNetwork): string | null {
   const known = KNOWN_NETWORKS[socialNetwork.network];
@@ -69,8 +72,8 @@ export function connectionItem(socialNetwork: SocialNetwork): string | null {
   const url = escapeText(known.url(socialNetwork.username));
   const display = escapeText(known.display(socialNetwork.username));
   return (
-    `#connection-with-icon("${known.icon}", ` +
-    `[#link("${url}")[#underline[${display}]]])`
+    `[#connection-with-icon("${known.icon}")` +
+    `[#link("${url}")[#underline[${display}]]]]`
   );
 }
 
