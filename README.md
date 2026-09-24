@@ -13,6 +13,10 @@ A typesetting desk for [RenderCV](https://github.com/sinaatalay/rendercv)-compat
 - **Zero network after load** — fonts, the RenderCV Typst theme and the compiler are bundled and vendored locally.
 - **Works on desktop and mobile** — installable as a PWA-friendly static site on GitHub Pages.
 
+## Install / Offline
+
+The site is a Progressive Web App: browsers that support it offer **Install** (or **Add to Home Screen**) from the menu — no app store needed. The app shell (UI, styles, scripts) is precached, so the page opens immediately with an internet connection and works offline from the first visit. The Typst compiler and its fonts are fetched on demand and cached after your first successful PDF compile, so once you have compiled online, offline PDF generation works too. Service workers update automatically when a new version is deployed.
+
 ## Getting started
 
 ```bash
