@@ -111,3 +111,7 @@ User wants to "capture the keys of the YAML and build a dynamic form" — implem
   1. `feat(form): add schema-driven wizard editor with autosave`
   2. `docs: record wizard editor feature and tests`
 - Suite: 98 tests (11 files) green; tsc + both builds green; NO push — user verifies locally via `npm run dev`.
+
+## Delivery decision PENDING (do not merge silently)
+- Authored lines: **2785** (excl. lockfile; includes 557 CSS + 631 tests + 262 schema) — exceeds the ~400 budget.
+- When the user decides to deliver to main: chained-PR split (step groups or capability) OR maintainer-approved `size:exception`. This branch is a local preview only.
