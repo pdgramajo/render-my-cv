@@ -52,7 +52,7 @@ The original SDD prompt scheduled PWA explicitly as "posteriormente" (later). It
 - [x] T1 ✅ `dc34da4`
 - [x] T2 ✅ `b4a5ae4`
 - [x] T3 ✅ `dc34da4` + `b4a5ae4`
-- [ ] Merge `feat/pwa-offline` → `main` + push (user decision under repository policy)
+- [x] Merge `feat/pwa-offline` → `main` + push (user decision under repository policy) ✅ merge commit `087bdb3` pushed 2026-09-24; Pages run 36056877698 success
 - [ ] Optional: manual install smoke test on real Android/iOS device
 
 ## Authorized edit roots
