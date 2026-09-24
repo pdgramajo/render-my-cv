@@ -16,7 +16,7 @@ describe('integration: fixture -> PDF (case 8)', () => {
       throw new Error('network disallowed')
     })
     try {
-      const fixturePath = resolve(__dirname, '../__fixtures__/johndoe-fake.yaml')
+      const fixturePath = resolve(__dirname, '../__fixtures__/example.yaml')
       const yaml = readFileSync(fixturePath, 'utf-8')
       const model = validateRenderCv(parseRenderCvYaml(yaml))
       const typst = renderCvToTypst(model)

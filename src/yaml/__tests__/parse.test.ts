@@ -13,14 +13,14 @@ import { PipelineError } from '../../types/pipeline';
 import type { RenderCv } from '../../types/rendercv';
 
 /** Raw fixture text inlined by Vite; no filesystem access, no node types. */
-import fixtureRaw from '../../__fixtures__/johndoe-fake.yaml?raw';
+import fixtureRaw from '../../__fixtures__/example.yaml?raw';
 
 function readFixture(): string {
   return fixtureRaw;
 }
 
 describe('parseRenderCvYaml', () => {
-  it('parses the Pablo fixture into a structured object', () => {
+  it('parses the fixture into a structured object', () => {
     const parsed = parseRenderCvYaml(readFixture());
 
     expect(parsed).toBeTypeOf('object');
@@ -29,7 +29,7 @@ describe('parseRenderCvYaml', () => {
     const cv = (parsed as { cv: Record<string, unknown> }).cv;
     expect(cv.name).toBe('John Doe');
     expect(cv.headline).toBe('Software Engineer');
-    expect(cv.location).toBe('Argentina');
+    expect(cv.location).toBe('Remote');
     expect(cv.email).toBe('johndoe@example.com');
     expect(cv.phone).toBe('+1 555 010 0000');
   });
@@ -74,12 +74,12 @@ describe('validateRenderCv', () => {
 
     expect(model.name).toBe('John Doe');
     expect(model.headline).toBe('Software Engineer');
-    expect(model.location).toBe('Argentina');
+    expect(model.location).toBe('Remote');
     expect(model.email).toBe('johndoe@example.com');
     expect(model.phone).toBe('+1 555 010 0000');
 
     expect(model.socialNetworks).toEqual([
-      { network: 'github', username: 'pdgramajo' },
+      { network: 'github', username: 'johndoe-fake' },
       { network: 'linkedin', username: 'johndoe-fake' },
     ]);
 
@@ -87,8 +87,8 @@ describe('validateRenderCv', () => {
 
     const experience = model.sections.experience;
     expect(experience).toHaveLength(2);
-    expect((experience as Array<{ company: string }>)[0].company).toBe('Independent');
-    expect((experience as Array<{ company: string }>)[1].company).toBe('Acme Corp');
+    expect((experience as Array<{ company: string }>)[0].company).toBe('Fictitious Labs');
+    expect((experience as Array<{ company: string }>)[1].company).toBe('Example Corp');
 
     const skills = model.sections.skills;
     expect(skills).toHaveLength(5);

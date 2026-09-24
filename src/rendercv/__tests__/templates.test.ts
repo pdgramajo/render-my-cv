@@ -16,7 +16,7 @@ import type {
 } from '../../types/rendercv';
 
 /** Raw fixture text inlined by Vite; no filesystem access, no node types. */
-import fixtureRaw from '../../__fixtures__/johndoe-fake.yaml?raw';
+import fixtureRaw from '../../__fixtures__/example.yaml?raw';
 
 /** Model helper for the render cases 4–6. */
 function model(overrides: Partial<RenderCv> = {}): RenderCv {
@@ -106,7 +106,7 @@ describe('renderCvToTypst — case 3: fixture renders to expected Typst', () => 
     expect(output).toContain('#headline([Software Engineer])');
     expect(output).toContain('#connections(');
     expect(output).toContain(
-      '[#connection-with-icon("github")[#link("https://github.com/pdgramajo")[#underline[github.com/pdgramajo]]]]',
+      '[#connection-with-icon("github")[#link("https://github.com/johndoe-fake")[#underline[github.com/johndoe-fake]]]]',
     );
     expect(output).toContain(
       '[#connection-with-icon("linkedin")[#link("https://linkedin.com/in/johndoe-fake")[#underline[linkedin.com/in/johndoe-fake]]]]',
@@ -131,12 +131,12 @@ describe('renderCvToTypst — case 3: fixture renders to expected Typst', () => 
     const output = renderCvToTypst(fixtureModel());
 
     expect(output).toContain('#regular-entry(');
-    expect(output).toContain('*Independent*');
+    expect(output).toContain('*Fictitious Labs*');
     expect(output).toContain('_Software Engineer_');
-    expect(output).toContain('- Building SaaS products, prototypes, and internal platforms using *React*, *TypeScript*, and *Node.js*.');
-    expect(output).toContain('2025-12 to present');
+    expect(output).toContain('- Building internal platforms using *React*, *TypeScript*, and *Node.js*.');
+    expect(output).toContain('2022-01 to present');
     expect(output).toContain('Remote');
-    expect(output).toContain('2019-08 to 2025-11');
+    expect(output).toContain('2018-06 to 2021-12');
   });
 
   it('renders education and skills sections', () => {
@@ -144,8 +144,8 @@ describe('renderCvToTypst — case 3: fixture renders to expected Typst', () => 
 
     expect(output).toContain('#education-entry(');
     expect(output).toContain('*Fictional State University*');
-    expect(output).toContain('_Systems Engineering_');
-    expect(output).toContain('2008-03 to 2014-12');
+    expect(output).toContain('_Computer Science_');
+    expect(output).toContain('2014-03 to 2018-05');
     expect(output).toContain('#content-area[');
     expect(output).toContain('- *React*: Hooks, server components, state management');
     expect(output).toContain('- *Node.js*');

@@ -24,7 +24,7 @@ import { PipelineError } from '../../types/pipeline';
 import type { RenderCv } from '../../types/rendercv';
 
 /** Raw fixture text inlined by Vite; no filesystem access, no node types. */
-import fixtureRaw from '../../__fixtures__/johndoe-fake.yaml?raw';
+import fixtureRaw from '../../__fixtures__/example.yaml?raw';
 
 function parsedFixture(): unknown {
   return parseRenderCvYaml(fixtureRaw);
@@ -40,11 +40,11 @@ describe('convertToModel (case 2)', () => {
 
     expect(model.name).toBe('John Doe');
     expect(model.headline).toBe('Software Engineer');
-    expect(model.location).toBe('Argentina');
+    expect(model.location).toBe('Remote');
     expect(model.email).toBe('johndoe@example.com');
     expect(model.phone).toBe('+1 555 010 0000');
     expect(model.socialNetworks).toEqual([
-      { network: 'github', username: 'pdgramajo' },
+      { network: 'github', username: 'johndoe-fake' },
       { network: 'linkedin', username: 'johndoe-fake' },
     ]);
     expect(Object.keys(model.sections)).toEqual(['summary', 'experience', 'education', 'skills']);
@@ -54,7 +54,7 @@ describe('convertToModel (case 2)', () => {
     const model = convertToModel(parsedFixture());
 
     const experience = model.sections.experience as unknown as Array<{ company: string }>;
-    expect(experience.map((entry) => entry.company)).toEqual(['Independent', 'Acme Corp']);
+    expect(experience.map((entry) => entry.company)).toEqual(['Fictitious Labs', 'Example Corp']);
 
     const skills = model.sections.skills as unknown as Array<{ label: string }>;
     expect(skills.map((entry) => entry.label)).toEqual([
@@ -71,10 +71,10 @@ describe('convertToModel (case 2)', () => {
 
     const first = model.sections.experience as unknown as Array<Record<string, unknown>>;
     expect(first[0]).toMatchObject({
-      company: 'Independent',
-      position: 'Software Engineer',
+      company: 'Fictitious Labs',
+      position: 'Senior Software Engineer',
       location: 'Remote',
-      startDate: '2025-12',
+      startDate: '2022-01',
       endDate: 'present',
     });
     expect(first[0].highlights).toHaveLength(2);
@@ -83,9 +83,9 @@ describe('convertToModel (case 2)', () => {
     const education = model.sections.education as unknown as Array<Record<string, unknown>>;
     expect(education[0]).toMatchObject({
       institution: 'Fictional State University',
-      area: 'Systems Engineering',
-      startDate: '2008-03',
-      endDate: '2014-12',
+      area: 'Computer Science',
+      startDate: '2014-03',
+      endDate: '2018-05',
     });
 
     const skills = model.sections.skills as unknown as Array<Record<string, unknown>>;

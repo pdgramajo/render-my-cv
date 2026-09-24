@@ -4,47 +4,51 @@
 # (name/headline/location/email/phone), `social_networks`, and the sections
 # `summary`, `experience`, `education`, `skills`.
 #
+# ALL DATA HERE IS FICTIONAL — invented names, companies, and contact details.
+# Do not replace this fixture with real personal data (spec: fixture content
+# must stay fictional and is never imported by application code).
+#
 # This file is a TEST FIXTURE only — it is never imported by application code
 # (spec: fixture content is not hardcoded in application code).
 
 cv:
   name: John Doe
   headline: Software Engineer
-  location: Argentina
+  location: Remote
   email: johndoe@example.com
   phone: "+1 555 010 0000"
   social_networks:
     - network: github
-      username: pdgramajo
+      username: johndoe-fake
     - network: linkedin
       username: johndoe-fake
   sections:
     summary:
-      - Software Engineer with 11 years of experience building web
-        products end to end, from architecture to deployment.
+      - Software Engineer with 8 years of experience building web products
+        end to end, from architecture to deployment.
     experience:
-      - company: Independent
-        position: Software Engineer
+      - company: Fictitious Labs
+        position: Senior Software Engineer
         location: Remote
-        start_date: "2025-12"
+        start_date: "2022-01"
         end_date: present
         highlights:
-          - Building SaaS products, prototypes, and internal platforms using *React*, *TypeScript*, and *Node.js*.
+          - Building internal platforms using *React*, *TypeScript*, and *Node.js*.
           - Leading migrations from legacy codebases to modern, testable architectures.
-      - company: Acme Corp
-        position: Full-Stack Engineer
-        location: Argentina
-        start_date: "2019-08"
-        end_date: "2025-11"
+      - company: Example Corp
+        position: Software Engineer
+        location: Remote
+        start_date: "2018-06"
+        end_date: "2021-12"
         highlights:
-          - Delivered the company's core web platform, serving millions of requests per day.
-          - Mentored a team of five engineers on testing and code review practices.
+          - Delivered internal tooling used across the company.
+          - Mentored junior engineers on testing and code review practices.
     education:
       - institution: Fictional State University
-        area: Systems Engineering
-        location: Argentina
-        start_date: "2008-03"
-        end_date: "2014-12"
+        area: Computer Science
+        location: Remote
+        start_date: "2014-03"
+        end_date: "2018-05"
         highlights:
           - Focused on distributed systems and software architecture.
     skills:

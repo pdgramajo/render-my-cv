@@ -9,7 +9,7 @@
  *
  * ```typst
  * #connections(
- *   #connection-with-icon("github", [#link("https://github.com/pdgramajo")[#underline[github.com/pdgramajo]]]),
+ *   #connection-with-icon("github", [#link("https://github.com/johndoe-fake")[#underline[github.com/johndoe-fake]]]),
  * )
  * ```
  */
