@@ -18,7 +18,7 @@
     // "node" types let the vitest-only assets.node.ts loader use node:fs
     // (the app sources stay browser-safe: vite rejects node builtins in
     // browser chunks, so the split is enforced at build time).
-    "types": ["vite/client", "node"]
+    "types": ["vite/client", "vite-plugin-pwa/client", "node"]
   },
   "include": ["src"]
 }
