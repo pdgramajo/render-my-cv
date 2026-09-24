@@ -27,6 +27,8 @@ jobs:
       - name: Run full suite (typst integration ON)
         run: TYPST_INTEGRATION=1 npm test
       - run: npm run build
+        env:
+          VITE_BASE: /render-my-cv/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
