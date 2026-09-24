@@ -60,13 +60,63 @@ export default function App() {
   }
 
   return (
-    <div>
-      <h1>RenderCV Web</h1>
-      <FileInput onFile={handleFile} disabled={loading} />
-      {loading && <div>Generating PDF...</div>}
-      {error && <div role="alert">{error}</div>}
-      <Preview pdfUrl={pdfUrl} />
-      <Actions pdfUrl={pdfUrl} onDownload={handleDownload} onShare={handleShare} />
+    <div className="app">
+      <header className="app__header">
+        <div className="masthead reveal reveal--1">
+          <p className="masthead__kicker">
+            <span className="masthead__glyph" aria-hidden="true">
+              ¶
+            </span>
+            YAML · Typst · PDF — set in your browser
+          </p>
+          <h1 className="masthead__title">RenderCV Web</h1>
+          <p className="masthead__lede">
+            A typesetting desk for RenderCV résumés. Drop a YAML file, and validation,
+            layout and PDF compilation happen right here — your CV never leaves this page.
+          </p>
+        </div>
+      </header>
+
+      <main className="workbench">
+        <aside className="workbench__controls">
+          <div className="reveal reveal--2">
+            <FileInput onFile={handleFile} disabled={loading} />
+          </div>
+
+          {loading && (
+            <div className="status status--loading" role="status">
+              <span className="status__spinner" aria-hidden="true" />
+              <span>Generating PDF...</span>
+            </div>
+          )}
+
+          {error && (
+            <div className="status status--error" role="alert">
+              <span className="status__glyph" aria-hidden="true">
+                !
+              </span>
+              <p className="status__error-text">{error}</p>
+            </div>
+          )}
+        </aside>
+
+        <section className="workbench__output">
+          <div className="output-stack reveal reveal--3">
+            <Preview pdfUrl={pdfUrl} />
+            <Actions
+              pdfUrl={pdfUrl}
+              onDownload={handleDownload}
+              onShare={handleShare}
+              disabled={loading}
+            />
+          </div>
+        </section>
+      </main>
+
+      <footer className="app__footer reveal reveal--4">
+        <p className="app__footer-note">RenderCV Web — local typesetting desk</p>
+        <p className="app__footer-meta">100% in-browser · YAML → Typst → PDF</p>
+      </footer>
     </div>
   )
 }

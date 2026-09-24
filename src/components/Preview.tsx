@@ -3,15 +3,33 @@ type Props = {
 }
 
 export function Preview({ pdfUrl }: Props) {
-  if (!pdfUrl) {
-    return <div data-testid="preview-empty">No PDF generated yet</div>
-  }
   return (
-    <iframe
-      data-testid="pdf-preview"
-      src={pdfUrl}
-      style={{ width: '100%', height: '80vh', border: '1px solid #ccc' }}
-      title="PDF Preview"
-    />
+    <section className="preview" aria-label="PDF preview">
+      <header className="preview__bar">
+        <span className="preview__label">PDF Preview</span>
+        <span
+          className={`preview__state${pdfUrl ? ' is-live' : ''}`}
+          aria-hidden="true"
+        >
+          {pdfUrl ? 'READY' : 'IDLE'}
+        </span>
+      </header>
+      {pdfUrl ? (
+        <iframe
+          data-testid="pdf-preview"
+          className="preview__frame"
+          src={pdfUrl}
+          title="PDF Preview"
+        />
+      ) : (
+        <div className="preview__empty">
+          <span className="preview__empty-glyph" aria-hidden="true">
+            ¶
+          </span>
+          <p data-testid="preview-empty">No PDF generated yet</p>
+          <span className="preview__empty-sub">your typeset page will appear here</span>
+        </div>
+      )}
+    </section>
   )
 }
