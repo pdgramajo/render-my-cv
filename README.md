@@ -2,6 +2,8 @@
 
 Render RenderCV YAML résumés to PDF entirely in your browser — zero uploads, Typst WASM, works on desktop and mobile.
 
+**Try it live:** [pdgramajo.github.io/render-my-cv](https://pdgramajo.github.io/render-my-cv/)
+
 A typesetting desk for [RenderCV](https://github.com/sinaatalay/rendercv)-compatible YAML résumés. Validation, layout and PDF compilation all happen locally: your CV never leaves your device.
 
 ## What it does
