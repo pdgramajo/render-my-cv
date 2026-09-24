@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title desc">
+  <title id="title">RenderCV Web — letterpress pilcrow</title>
+  <desc id="desc">Cream paper square with an ink pilcrow glyph and an accent rule, letterpress atelier brand.</desc>
+
+  <!-- Cream paper -->
+  <rect x="0" y="0" width="100" height="100" fill="#f4efe4"/>
+
+  <!-- Faint letterpress platen border -->
+  <rect x="7" y="7" width="86" height="86" rx="14" fill="none" stroke="rgba(33, 29, 22, 0.15)" stroke-width="1.6"/>
+
+  <!-- Ink pilcrow ¶ (solid letterpress block shapes) -->
+  <g fill="#211d16">
+    <!-- stem -->
+    <rect x="27.5" y="13" width="6.5" height="68" rx="1.6"/>
+    <!-- bowl: top bar -->
+    <rect x="34" y="13" width="32" height="6.5" rx="1.6"/>
+    <!-- bowl: right bar -->
+    <rect x="59.5" y="13" width="6.5" height="29" rx="1.6"/>
+    <!-- bowl: bottom bar -->
+    <rect x="34" y="35.5" width="32" height="6.5" rx="1.6"/>
+    <!-- lower right drop strokes -->
+    <rect x="55" y="48" width="8" height="33" rx="1.6"/>
+    <rect x="66.5" y="48" width="8" height="33" rx="1.6"/>
+  </g>
+
+  <!-- Accent rule -->
+  <rect x="27.5" y="88" width="47" height="5.5" rx="2.75" fill="#c43a15"/>
+</svg>
