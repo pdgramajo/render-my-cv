@@ -171,9 +171,16 @@ describe('App: classic view + form wizard gate (integration)', () => {
       expect(stored.model.name).toBe('Autosaved Ada')
     })
 
-    // "Reload": a fresh mount restores the draft but still lands on the classic view.
+    // "Reload": a fresh mount must NOT auto-inject the saved draft — the
+    // classic view starts clean, and the draft is recovered explicitly.
     cleanup()
     render(<App />)
+    expect(screen.getByText('Drop your CV YAML here')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /edit yaml/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
+
+    // The stored draft surfaces as a "Restore draft" affordance instead.
+    fireEvent.click(screen.getByRole('button', { name: /restore draft/i }))
     expect(screen.getByRole('button', { name: /edit yaml/i })).toBeInTheDocument()
     expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
 
@@ -188,9 +195,19 @@ describe('App: classic view + form wizard gate (integration)', () => {
       JSON.stringify({ model: compactBaseModel, raw: '' }),
     )
     render(<App />)
-    // Classic view first — the wizard opens only via Edit YAML.
+    // Classic view first — the stored draft is NOT injected: no Edit YAML gate,
+    // no wizard, the upload affordance stays front and center.
+    expect(screen.getByText('Drop your CV YAML here')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /edit yaml/i })).not.toBeInTheDocument()
     expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /edit yaml/i }))
+
+    // The saved draft is recovered explicitly and stays on the classic view —
+    // the wizard still only opens via Edit YAML.
+    fireEvent.click(screen.getByRole('button', { name: /restore draft/i }))
+    expect(screen.getByRole('button', { name: /edit yaml/i })).toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
+
+    openEditGate()
     expect((screen.getByRole("textbox", { name: /^name$/i }) as HTMLInputElement).value).toBe('John Doe')
   })
 

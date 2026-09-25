@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Actions, FileInput, Preview } from './components'
 import { Wizard } from './components/form'
 import { detectUnknownKeys } from './form/schema'
@@ -22,26 +22,19 @@ export default function App() {
   const [pdfName, setPdfName] = useState<string | null>(null)
 
   const draft = useDraft()
-  // Restore-on-mount writes model+raw in one effect run; remember it so the
-  // first autosave doesn't immediately rewrite what was just restored.
-  const restoredRef = useRef(false)
+  // A draft may exist from a previous visit, but it is NEVER injected on
+  // mount — the workbench starts clean and the stored draft is only loaded
+  // when the user explicitly presses "Restore draft". Read-only existence
+  // check that does not touch `model` or `rawDraft`.
+  const [hasStoredDraft, setHasStoredDraft] = useState(false)
 
   useEffect(() => {
-    const saved = draft.restore()
-    if (saved !== null) {
-      restoredRef.current = true
-      setModel(saved.model)
-      setRawDraft(saved.raw)
-    }
+    setHasStoredDraft(draft.restore() !== null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     if (model === null) {
-      return
-    }
-    if (restoredRef.current) {
-      restoredRef.current = false
       return
     }
     draft.persist({ model, raw: rawDraft })
@@ -68,8 +61,19 @@ export default function App() {
     setRawDraft('')
     setStep(0)
     draft.clear()
+    // The cleared draft no longer exists, so drop the restore affordance too.
+    setHasStoredDraft(false)
     // Remounts FileInputs so the selected-file chip clears too.
     setResetKey((key) => key + 1)
+  }
+
+  const handleRestoreDraft = () => {
+    const saved = draft.restore()
+    if (saved !== null) {
+      setModel(saved.model)
+      setRawDraft(saved.raw)
+      setStep(0)
+    }
   }
 
   const compile = async (yaml: string) => {
@@ -207,6 +211,15 @@ export default function App() {
                   onClick={() => setView('edit')}
                 >
                   Edit YAML
+                </button>
+              )}
+              {hasStoredDraft && model === null && (
+                <button
+                  type="button"
+                  className="btn btn--ghost btn--restore"
+                  onClick={handleRestoreDraft}
+                >
+                  Restore draft
                 </button>
               )}
               <button
