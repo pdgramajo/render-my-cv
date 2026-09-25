@@ -52,6 +52,12 @@ User wants to "capture the keys of the YAML and build a dynamic form" — implem
 
 ## Tasks
 
+### T0 — UX: classic default view + "Edit YAML" gate (NEW, user decision)
+- Default view = CLASSIC workbench exactly like main: FileInput drop → compile → preview + Actions.
+- Wizard is NOT shown by default. A visible **"Edit YAML"** button in the left controls panel switches to wizard mode (`view` / `edit` state in App; default `view`).
+- From wizard, a **"← Back to preview"** control returns to classic view without losing draft/model.
+- Import file still compiles immediately (classic behavior); wizard accessible afterwards via Edit YAML when a model exists.
+
 ### T1 — Serializer `modelToYaml` (READY)
 - File: `src/rendercv/serialize.ts` (new) exporting `renderCvToYaml(model: RenderCv): string` (+ maybe `parseYamlToModel` wrapper already exists via parse.ts).
 - Invert `convertToModel`: snake_case keys (`social_networks`, `start_date`, `end_date`, `bold_keywords`), preserve section order via `Object.entries` order of `sections`, dump with js-yaml `dump`.
@@ -107,10 +113,12 @@ User wants to "capture the keys of the YAML and build a dynamic form" — implem
 - [x] T3 wizard steps UI — `src/components/form/` (12 component tests)
 - [x] T4 app integration + autosave + raw toggle — `src/App.tsx`, `src/hooks/useDraft.ts` (6 integration tests)
 - [x] T5 styles + docs — `src/styles.css`, README note, this doc
+- [x] T0 classic-default view + Edit YAML gate — commit `3ac28ba` (default classic view, "Edit YAML" opens wizard, "← Back to preview" keeps state, import stays in view; +112/−25)
 - Commits:
   1. `feat(form): add schema-driven wizard editor with autosave`
   2. `docs: record wizard editor feature and tests`
-- Suite: 98 tests (11 files) green; tsc + both builds green; NO push — user verifies locally via `npm run dev`.
+  3. `feat(form): gate wizard behind Edit YAML on classic view`
+- Suite: 100 tests (11 files) green; tsc + both builds green; NO push — user verifies locally via `npm run dev`.
 
 ## Delivery decision PENDING (do not merge silently)
 - Authored lines: **2785** (excl. lockfile; includes 557 CSS + 631 tests + 262 schema) — exceeds the ~400 budget.
