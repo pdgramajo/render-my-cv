@@ -9,6 +9,7 @@ A typesetting desk for [RenderCV](https://github.com/sinaatalay/rendercv)-compat
 ## What it does
 
 - **YAML in, PDF out** — drop a `.yaml` file in the RenderCV format, get a polished PDF.
+- **Form editor** — the classic drop-a-YAML flow stays front and center; press **Edit YAML** to walk through a step-by-step wizard (header, summary, experience, education, skills) over the known RenderCV keys. A **raw YAML toggle** on the final step keeps unknown/advanced keys reachable, and the draft autosaves to your browser's local storage between sessions.
 - **100% client-side** — no servers, no uploads. The Typst compiler runs as WebAssembly in your browser tab.
 - **Zero network after load** — fonts, the RenderCV Typst theme and the compiler are bundled and vendored locally.
 - **Works on desktop and mobile** — installable as a PWA-friendly static site on GitHub Pages.

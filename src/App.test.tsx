@@ -19,6 +19,7 @@ function pickFile(file: File) {
 describe('App', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    localStorage.clear() // autosaved drafts must not leak across tests
     vi.stubGlobal('URL', {
       createObjectURL: vi.fn(() => 'blob:mock'),
       revokeObjectURL: vi.fn(),
