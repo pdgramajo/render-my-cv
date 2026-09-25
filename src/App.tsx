@@ -180,7 +180,9 @@ export default function App() {
         </div>
       </header>
 
-      <main className="workbench">
+      <main
+        className={'workbench' + (view === 'edit' ? ' workbench--edit' : '')}
+      >
         <section className="workbench__editor">
           {view === 'edit' && model !== null ? (
             <Wizard
@@ -200,6 +202,10 @@ export default function App() {
               compiling={loading}
               toolbarKey={resetKey}
               onExit={() => setView('view')}
+              pdfUrl={pdfUrl}
+              pdfName={pdfName ? `${pdfName}.pdf` : undefined}
+              onDownload={handleDownload}
+              onShare={handleShare}
             />
           ) : (
             <div className="view-controls reveal reveal--2">
@@ -234,34 +240,36 @@ export default function App() {
           )}
         </section>
 
-        <section className="workbench__output">
-          {loading && (
-            <div className="status status--loading" role="status">
-              <span className="status__spinner" aria-hidden="true" />
-              <span>Generating PDF...</span>
-            </div>
-          )}
+        {view !== 'edit' && (
+          <section className="workbench__output">
+            {loading && (
+              <div className="status status--loading" role="status">
+                <span className="status__spinner" aria-hidden="true" />
+                <span>Generating PDF...</span>
+              </div>
+            )}
 
-          {error && (
-            <div className="status status--error" role="alert">
-              <span className="status__glyph" aria-hidden="true">
-                !
-              </span>
-              <p className="status__error-text">{error}</p>
-            </div>
-          )}
+            {error && (
+              <div className="status status--error" role="alert">
+                <span className="status__glyph" aria-hidden="true">
+                  !
+                </span>
+                <p className="status__error-text">{error}</p>
+              </div>
+            )}
 
-          <div className="output-stack reveal reveal--3">
-            <Preview pdfUrl={pdfUrl} />
-            <Actions
-              pdfUrl={pdfUrl}
-              fileName={pdfName ? `${pdfName}.pdf` : undefined}
-              onDownload={handleDownload}
-              onShare={handleShare}
-              disabled={loading}
-            />
-          </div>
-        </section>
+            <div className="output-stack reveal reveal--3">
+              <Preview pdfUrl={pdfUrl} />
+              <Actions
+                pdfUrl={pdfUrl}
+                fileName={pdfName ? `${pdfName}.pdf` : undefined}
+                onDownload={handleDownload}
+                onShare={handleShare}
+                disabled={loading}
+              />
+            </div>
+          </section>
+        )}
       </main>
 
       <footer className="app__footer reveal reveal--4">

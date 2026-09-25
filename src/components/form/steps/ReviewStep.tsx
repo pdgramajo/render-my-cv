@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Actions, Preview } from '../../../components'
 import { renderCvToYaml } from '../../../rendercv/serialize'
 import type { RenderCv } from '../../../types/rendercv'
 
@@ -10,6 +11,14 @@ type Props = {
   onCompileFromModel: () => void
   onCompileFromRaw: () => void
   compiling: boolean
+  /** Optional PDF handoff from the parent. When both the URL and a download
+   * handler are provided, the compiled preview and its Download/Share actions
+   * render inside the review step (used when the wizard takes over the full
+   * page width and the classic output column is hidden). */
+  pdfUrl?: string | null
+  pdfName?: string
+  onDownload?: () => void
+  onShare?: () => void
 }
 
 /**
@@ -26,6 +35,10 @@ export function ReviewStep({
   onCompileFromModel,
   onCompileFromRaw,
   compiling,
+  pdfUrl,
+  pdfName,
+  onDownload,
+  onShare,
 }: Props) {
   const [rawMode, setRawMode] = useState(false)
   const yaml = useMemo(() => renderCvToYaml(model), [model])
@@ -107,6 +120,19 @@ export function ReviewStep({
         >
           {compiling ? 'Compiling…' : 'Compile PDF'}
         </button>
+      )}
+
+      {pdfUrl && onDownload && (
+        <div className="review__output">
+          <Preview pdfUrl={pdfUrl} />
+          <Actions
+            pdfUrl={pdfUrl}
+            fileName={pdfName}
+            onDownload={onDownload}
+            onShare={onShare}
+            disabled={compiling}
+          />
+        </div>
       )}
     </div>
   )

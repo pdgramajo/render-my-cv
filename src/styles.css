@@ -261,6 +261,12 @@ body::before {
   align-items: start;
 }
 
+/* Editing hides the output column so the wizard spans the full page width;
+   the compiled PDF then lives inside the review step itself. */
+.workbench--edit {
+  grid-template-columns: 1fr;
+}
+
 .workbench__editor {
   min-width: 0;
 }
@@ -1229,6 +1235,22 @@ textarea.field__control {
 .review__note {
   font-size: 0.8125rem;
   color: var(--ink-soft);
+}
+
+/* Compiled PDF inside the review step: a divider separates it from the YAML
+   panel, and the preview/actions card mirrors the classic output stack. */
+.review__output {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.review__output .preview {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: none;
 }
 
 .review .btn--primary {

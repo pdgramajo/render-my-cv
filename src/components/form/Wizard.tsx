@@ -30,6 +30,13 @@ type Props = {
   /** When provided, the wizard shows a "← Back to preview" control that
    * returns to the classic view (state is kept by the parent). */
   onExit?: () => void
+  /** Optional PDF handoff from the parent: when provided, the Review step
+   * shows the compiled preview plus Download/Share actions after compiling,
+   * so the wizard works standalone without a side-by-side output column. */
+  pdfUrl?: string | null
+  pdfName?: string
+  onDownload?: () => void
+  onShare?: () => void
 }
 
 const LAST_STEP = WIZARD_STEPS.length - 1
@@ -56,6 +63,10 @@ export function Wizard({
   compiling,
   toolbarKey,
   onExit,
+  pdfUrl,
+  pdfName,
+  onDownload,
+  onShare,
 }: Props) {
   const safeStep = Math.min(Math.max(step, 0), LAST_STEP)
   const currentStep = WIZARD_STEPS[safeStep]
@@ -82,6 +93,10 @@ export function Wizard({
             onCompileFromModel={onCompileFromModel}
             onCompileFromRaw={onCompileFromRaw}
             compiling={compiling}
+            pdfUrl={pdfUrl}
+            pdfName={pdfName}
+            onDownload={onDownload}
+            onShare={onShare}
           />
         )
     }
