@@ -678,6 +678,17 @@ body::before {
   text-transform: uppercase;
 }
 
+/* classic view: "Edit YAML" gate button keeps the same full-width
+   mono-uppercase rhythm as Start over */
+.btn--edit {
+  margin-top: var(--space-3);
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 /* ---------- footer ---------- */
 
 .app__footer {
@@ -835,7 +846,8 @@ body::before {
   gap: var(--space-2);
 }
 
-.wizard__meta .btn--reset {
+.wizard__meta .btn--reset,
+.wizard__meta .btn--exit {
   margin-top: 0;
   width: auto;
   padding: 0.5rem 0.9rem;

@@ -30,12 +30,17 @@ function pickFile(file: File) {
   fireEvent.change(input, { target: { files: [file] } })
 }
 
+/** The wizard is gated behind the "Edit YAML" button on the classic view. */
+function openEditGate() {
+  fireEvent.click(screen.getByRole('button', { name: /edit yaml/i }))
+}
+
 function goToReview() {
   const nav = screen.getByRole('navigation', { name: /steps/i })
   fireEvent.click(within(nav).getByRole('button', { name: /step 6/i }))
 }
 
-describe('App: form wizard (integration)', () => {
+describe('App: classic view + form wizard gate (integration)', () => {
   beforeEach(() => {
     localStorage.clear()
     vi.clearAllMocks()
@@ -50,10 +55,23 @@ describe('App: form wizard (integration)', () => {
     vi.unstubAllGlobals()
   })
 
-  it('imports the fixture into the form, edits it, and compiles from the model', async () => {
+  it('defaults to the classic upload view with the wizard hidden', () => {
+    render(<App />)
+    expect(screen.getByText('Drop your CV YAML here')).toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
+    // No model yet → no "Edit YAML" gate.
+    expect(screen.queryByRole('button', { name: /edit yaml/i })).not.toBeInTheDocument()
+  })
+
+  it('imports the fixture onto the classic preview, then edits it via the wizard and compiles from the model', async () => {
     render(<App />)
     pickFile(new File([fixtureRaw], 'example.yaml', { type: 'text/yaml' }))
 
+    // Import lands on the classic view — the model exists, the wizard does not show.
+    const edit = await screen.findByRole('button', { name: /edit yaml/i })
+    expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
+
+    fireEvent.click(edit)
     const name = (await screen.findByRole("textbox", { name: /^name$/i })) as HTMLInputElement
     expect(name.value).toBe('John Doe')
 
@@ -88,6 +106,8 @@ describe('App: form wizard (integration)', () => {
     render(<App />)
     pickFile(new File([raw], 'raw.yaml', { type: 'text/yaml' }))
 
+    await screen.findByRole('button', { name: /edit yaml/i })
+    openEditGate()
     await screen.findByRole("textbox", { name: /^name$/i })
     goToReview()
 
@@ -124,6 +144,8 @@ describe('App: form wizard (integration)', () => {
     render(<App />)
     pickFile(new File([withUnknown], 'custom.yaml', { type: 'text/yaml' }))
 
+    await screen.findByRole('button', { name: /edit yaml/i })
+    openEditGate()
     await screen.findByRole("textbox", { name: /^name$/i })
     goToReview()
 
@@ -131,9 +153,12 @@ describe('App: form wizard (integration)', () => {
     expect(warning).toHaveTextContent('cv.sections.experience[0].custom_field')
   })
 
-  it('autosaves the draft after editing and restores it on reload', async () => {
+  it('autosaves the draft after editing and restores it on reload behind the gate', async () => {
     render(<App />)
     pickFile(new File([fixtureRaw], 'example.yaml', { type: 'text/yaml' }))
+
+    await screen.findByRole('button', { name: /edit yaml/i })
+    openEditGate()
 
     const name = (await screen.findByRole("textbox", { name: /^name$/i })) as HTMLInputElement
     fireEvent.change(name, { target: { value: 'Autosaved Ada' } })
@@ -146,32 +171,62 @@ describe('App: form wizard (integration)', () => {
       expect(stored.model.name).toBe('Autosaved Ada')
     })
 
-    // "Reload": a fresh mount restores the draft straight into the wizard.
+    // "Reload": a fresh mount restores the draft but still lands on the classic view.
     cleanup()
     render(<App />)
+    expect(screen.getByRole('button', { name: /edit yaml/i })).toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
+
+    openEditGate()
     const restored = (await screen.findByRole("textbox", { name: /^name$/i })) as HTMLInputElement
     expect(restored.value).toBe('Autosaved Ada')
-    expect(screen.getByRole('navigation', { name: /steps/i })).toBeInTheDocument()
   })
 
-  it('restores a previously saved draft without a file import', () => {
+  it('restores a previously saved draft without a file import, behind the gate', () => {
     localStorage.setItem(
       DRAFT_KEY,
       JSON.stringify({ model: compactBaseModel, raw: '' }),
     )
     render(<App />)
-    expect(screen.getByRole('navigation', { name: /steps/i })).toBeInTheDocument()
+    // Classic view first — the wizard opens only via Edit YAML.
+    expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /edit yaml/i }))
     expect((screen.getByRole("textbox", { name: /^name$/i }) as HTMLInputElement).value).toBe('John Doe')
+  })
+
+  it('returns from the wizard to the classic preview without losing the model or PDF', async () => {
+    render(<App />)
+    pickFile(new File([fixtureRaw], 'example.yaml', { type: 'text/yaml' }))
+
+    await screen.findByRole('button', { name: /edit yaml/i })
+    // The classic import already produced a preview.
+    await waitFor(() => {
+      expect(screen.getByTestId('pdf-preview')).toBeInTheDocument()
+    })
+
+    openEditGate()
+    const name = (await screen.findByRole("textbox", { name: /^name$/i })) as HTMLInputElement
+    fireEvent.change(name, { target: { value: 'Jane Smith' } })
+
+    fireEvent.click(screen.getByRole('button', { name: /back to preview/i }))
+
+    // Back on the classic view; preview and model survive.
+    expect(screen.queryByRole('navigation', { name: /steps/i })).not.toBeInTheDocument()
+    expect(screen.getByTestId('pdf-preview')).toBeInTheDocument()
+
+    openEditGate()
+    expect((screen.getByRole("textbox", { name: /^name$/i }) as HTMLInputElement).value).toBe('Jane Smith')
   })
 
   it('start over clears the form, the draft and the preview', async () => {
     render(<App />)
     pickFile(new File([fixtureRaw], 'example.yaml', { type: 'text/yaml' }))
 
-    await screen.findByRole("textbox", { name: /^name$/i })
+    await screen.findByRole('button', { name: /edit yaml/i })
     fireEvent.click(screen.getByRole('button', { name: /start over/i }))
 
     expect(screen.getByText('Drop your CV YAML here')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /edit yaml/i })).not.toBeInTheDocument()
     await waitFor(() => {
       expect(screen.getByTestId('preview-empty')).toBeInTheDocument()
     })

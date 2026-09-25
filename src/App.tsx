@@ -12,6 +12,9 @@ export default function App() {
   const [model, setModel] = useState<RenderCv | null>(null)
   const [rawDraft, setRawDraft] = useState('')
   const [step, setStep] = useState(0)
+  // 'view' is the classic workbench (drop YAML → preview); the wizard form
+  // only appears once the user presses "Edit YAML".
+  const [view, setView] = useState<'view' | 'edit'>('view')
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -111,6 +114,8 @@ export default function App() {
       setModel(imported)
       setRawDraft(text)
       setStep(0)
+      // Import always lands back on the classic preview (never opens the wizard).
+      setView('view')
       // Same pipeline as before the wizard: import compiles immediately too.
       const bytes = await compileTypst(imported)
       const url = URL.createObjectURL(
@@ -163,16 +168,17 @@ export default function App() {
           </p>
           <h1 className="masthead__title">RenderCV Web</h1>
           <p className="masthead__lede">
-            A typesetting desk for RenderCV résumés. Compose your CV in the form wizard,
-            import an existing YAML to prefill it, and validation, layout and PDF compilation
-            happen right here — your CV never leaves this page.
+            A typesetting desk for RenderCV résumés. Drop a YAML and preview the
+            PDF instantly; press Edit YAML to compose or refine the same CV in
+            the form wizard. Validation, layout and PDF compilation happen right
+            here — your CV never leaves this page.
           </p>
         </div>
       </header>
 
       <main className="workbench">
         <section className="workbench__editor">
-          {model !== null ? (
+          {view === 'edit' && model !== null ? (
             <Wizard
               model={model}
               step={step}
@@ -189,20 +195,20 @@ export default function App() {
               savedAt={draft.savedAt}
               compiling={loading}
               toolbarKey={resetKey}
+              onExit={() => setView('view')}
             />
           ) : (
-            <div className="empty-state reveal reveal--2">
-              <p className="empty-state__kicker">
-                <span className="masthead__glyph" aria-hidden="true">
-                  ¶
-                </span>
-                Compose in the wizard, or import a YAML to prefill it
-              </p>
+            <div className="view-controls reveal reveal--2">
               <FileInput key={resetKey} onFile={handleImportFile} disabled={loading} />
-              <p className="empty-state__note">
-                Start typing (your draft autosaves to this device) or drop an existing
-                RenderCV YAML to prefill the form.
-              </p>
+              {model !== null && (
+                <button
+                  type="button"
+                  className="btn btn--ghost btn--edit"
+                  onClick={() => setView('edit')}
+                >
+                  Edit YAML
+                </button>
+              )}
               <button
                 type="button"
                 className="btn btn--ghost btn--reset"

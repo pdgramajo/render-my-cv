@@ -27,6 +27,9 @@ type Props = {
   savedAt: Date | null
   compiling: boolean
   toolbarKey: number
+  /** When provided, the wizard shows a "← Back to preview" control that
+   * returns to the classic view (state is kept by the parent). */
+  onExit?: () => void
 }
 
 const LAST_STEP = WIZARD_STEPS.length - 1
@@ -52,6 +55,7 @@ export function Wizard({
   savedAt,
   compiling,
   toolbarKey,
+  onExit,
 }: Props) {
   const safeStep = Math.min(Math.max(step, 0), LAST_STEP)
   const currentStep = WIZARD_STEPS[safeStep]
@@ -95,6 +99,16 @@ export function Wizard({
                 ? 'Saving draft…'
                 : `Draft saved locally · ${savedAt?.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) ?? ''}`}
             </p>
+          )}
+          {onExit && (
+            <button
+              type="button"
+              className="btn btn--ghost btn--exit"
+              onClick={onExit}
+              disabled={compiling}
+            >
+              ← Back to preview
+            </button>
           )}
           <button
             type="button"
