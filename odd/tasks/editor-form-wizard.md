@@ -120,6 +120,7 @@ User wants to "capture the keys of the YAML and build a dynamic form" — implem
   3. `feat(form): gate wizard behind Edit YAML on classic view`
 - Suite: 100 tests (11 files) green; tsc + both builds green; NO push — user verifies locally via `npm run dev`.
 
-## Delivery decision PENDING (do not merge silently)
-- Authored lines: **2785** (excl. lockfile; includes 557 CSS + 631 tests + 262 schema) — exceeds the ~400 budget.
-- When the user decides to deliver to main: chained-PR split (step groups or capability) OR maintainer-approved `size:exception`. This branch is a local preview only.
+## Delivery decision RESOLVED (2026-09-25)
+- Authored lines (actual): **3047** (2985 added + 62 deleted; includes CSS/tests/schema) — exceeds the ~400 budget.
+- Decision: maintainer approved **`size:exception`** — ONE PR, no chained split.
+- PR: `feat/editor-form-wizard` → `main`, pushed 2026-09-25; merge is a separate decision under ordinary repository policy.
