@@ -11,6 +11,9 @@ type Props = {
   onCompileFromModel: () => void
   onCompileFromRaw: () => void
   compiling: boolean
+  /** Optional compile error from the parent (shown instead of the blank
+   * preview after a failed compile from the wizard). */
+  error?: string | null
   /** Optional PDF handoff from the parent. When both the URL and a download
    * handler are provided, the compiled preview and its Download/Share actions
    * render inside the review step (used when the wizard takes over the full
@@ -35,6 +38,7 @@ export function ReviewStep({
   onCompileFromModel,
   onCompileFromRaw,
   compiling,
+  error,
   pdfUrl,
   pdfName,
   onDownload,
@@ -120,6 +124,15 @@ export function ReviewStep({
         >
           {compiling ? 'Compiling…' : 'Compile PDF'}
         </button>
+      )}
+
+      {error && (
+        <p className="status status--error" role="alert">
+          <span className="status__glyph" aria-hidden="true">
+            !
+          </span>
+          <span className="status__error-text">{error}</span>
+        </p>
       )}
 
       {pdfUrl && onDownload && (

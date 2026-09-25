@@ -202,6 +202,7 @@ export default function App() {
               compiling={loading}
               toolbarKey={resetKey}
               onExit={() => setView('view')}
+              error={error}
               pdfUrl={pdfUrl}
               pdfName={pdfName ? `${pdfName}.pdf` : undefined}
               onDownload={handleDownload}

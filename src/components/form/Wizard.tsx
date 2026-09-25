@@ -30,6 +30,9 @@ type Props = {
   /** When provided, the wizard shows a "← Back to preview" control that
    * returns to the classic view (state is kept by the parent). */
   onExit?: () => void
+  /** Compile error from the parent, surfaced inside the wizard so a failed
+   * compile from step 6 is visible even though the output column is hidden. */
+  error?: string | null
   /** Optional PDF handoff from the parent: when provided, the Review step
    * shows the compiled preview plus Download/Share actions after compiling,
    * so the wizard works standalone without a side-by-side output column. */
@@ -63,6 +66,7 @@ export function Wizard({
   compiling,
   toolbarKey,
   onExit,
+  error,
   pdfUrl,
   pdfName,
   onDownload,
@@ -93,6 +97,7 @@ export function Wizard({
             onCompileFromModel={onCompileFromModel}
             onCompileFromRaw={onCompileFromRaw}
             compiling={compiling}
+            error={error}
             pdfUrl={pdfUrl}
             pdfName={pdfName}
             onDownload={onDownload}
