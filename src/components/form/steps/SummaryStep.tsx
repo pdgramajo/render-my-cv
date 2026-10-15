@@ -1,12 +1,16 @@
 import { SUMMARY_LIST } from '../../../form/schema'
+import type { SectionEntry } from '../../../types/rendercv'
 import { EditableList, StringListRow } from '../EditableList'
 import type { StepProps } from './shared'
 
 /** Step 2 — Summary: markdown paragraphs, one per row. */
 export function SummaryStep({ model, onChange }: StepProps) {
-  const summary = (model.sections.summary as string[] | undefined) ?? []
+  const summaryEntry = model.sections.summary
+    ? (model.sections.summary as SectionEntry)
+    : { name: 'summary', type: 'summary' as const, payload: [] }
+  const summary = summaryEntry.payload as string[]
   const patchSummaries = (next: string[]) =>
-    onChange({ ...model, sections: { ...model.sections, summary: next } })
+    onChange({ ...model, sections: { ...model.sections, summary: { ...summaryEntry, payload: next } } })
 
   return (
     <div className="step__fields">

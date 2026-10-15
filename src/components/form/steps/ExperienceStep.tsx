@@ -1,4 +1,4 @@
-import type { ExperienceEntry } from '../../../types/rendercv'
+import type { ExperienceEntry, SectionEntry } from '../../../types/rendercv'
 import { EXPERIENCE_FIELDS, EXPERIENCE_LISTS } from '../../../form/schema'
 import { EditableList } from '../EditableList'
 import { EntryListRow } from '../EntryListRow'
@@ -6,9 +6,12 @@ import type { StepProps } from './shared'
 
 /** Step 3 — Experience: role entries with dates, highlights and bold keywords. */
 export function ExperienceStep({ model, onChange }: StepProps) {
-  const experience = (model.sections.experience as ExperienceEntry[] | undefined) ?? []
+  const experienceEntry = model.sections.experience
+    ? (model.sections.experience as SectionEntry)
+    : { name: 'experience', type: 'experience' as const, payload: [] }
+  const experience = experienceEntry.payload as ExperienceEntry[]
   const patchEntries = (next: typeof experience) =>
-    onChange({ ...model, sections: { ...model.sections, experience: next } })
+    onChange({ ...model, sections: { ...model.sections, experience: { ...experienceEntry, payload: next } } })
 
   return (
     <div className="step__fields">

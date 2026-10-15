@@ -147,8 +147,8 @@ export function header(model: RenderCv): string {
   return parts.join('\n\n');
 }
 
-/** `== Summary` heading + `#summary[...]` block; empty summaries render nothing. */
-export function summarySection(paragraphs: string[]): string {
+/** `== <title>` heading + `#summary[...]` block; empty summaries render nothing. */
+export function summarySection(title: string, paragraphs: string[]): string {
   const body = paragraphs
     .filter((paragraph) => paragraph.length > 0)
     .map((paragraph) => renderMarkdown(paragraph))
@@ -156,32 +156,32 @@ export function summarySection(paragraphs: string[]): string {
   if (body.length === 0) {
     return '';
   }
-  return `== Summary\n#summary[\n  ${body}\n]`;
+  return `== ${title}\n#summary[\n  ${body}\n]`;
 }
 
-/** `== Experience` heading + `#regular-entry` blocks; empty lists render nothing. */
-export function experienceSection(entries: ExperienceEntry[]): string {
+/** `== <title>` heading + `#regular-entry` blocks; empty lists render nothing. */
+export function experienceSection(title: string, entries: ExperienceEntry[]): string {
   if (entries.length === 0) {
     return '';
   }
-  return `== Experience\n${entries.map(experienceEntry).join('\n\n')}`;
+  return `== ${title}\n${entries.map(experienceEntry).join('\n\n')}`;
 }
 
-/** `== Education` heading + `#education-entry` blocks; empty lists render nothing. */
-export function educationSection(entries: EducationEntry[]): string {
+/** `== <title>` heading + `#education-entry` blocks; empty lists render nothing. */
+export function educationSection(title: string, entries: EducationEntry[]): string {
   if (entries.length === 0) {
     return '';
   }
-  return `== Education\n${entries.map(educationEntry).join('\n\n')}`;
+  return `== ${title}\n${entries.map(educationEntry).join('\n\n')}`;
 }
 
 /**
- * `== Skills` heading + `#content-area[...]` with one `- *label*: details`
+ * `== <title>` heading + `#content-area[...]` with one `- *label*: details`
  * bullet per skill (source order). Empty or all-empty-label lists render
  * nothing. `content-area` is the lib.typ wrapper used by the skills section
  * (design's verified API list); exact parity is checked in PR-4 (4.12).
  */
-export function skillsSection(entries: SkillEntry[]): string {
+export function skillsSection(title: string, entries: SkillEntry[]): string {
   const bullets = entries
     .filter((entry) => entry.label.trim().length > 0)
     .map((entry) => {
@@ -194,5 +194,5 @@ export function skillsSection(entries: SkillEntry[]): string {
   if (bullets.length === 0) {
     return '';
   }
-  return `== Skills\n#content-area[\n${bullets.join('\n')}\n]`;
+  return `== ${title}\n#content-area[\n${bullets.join('\n')}\n]`;
 }

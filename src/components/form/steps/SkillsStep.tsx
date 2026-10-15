@@ -1,4 +1,4 @@
-import type { SkillEntry } from '../../../types/rendercv'
+import type { SectionEntry, SkillEntry } from '../../../types/rendercv'
 import { SKILLS_FIELDS } from '../../../form/schema'
 import { EditableList } from '../EditableList'
 import { EntryListRow } from '../EntryListRow'
@@ -6,9 +6,12 @@ import type { StepProps } from './shared'
 
 /** Step 5 — Skills: label/detail pairs. */
 export function SkillsStep({ model, onChange }: StepProps) {
-  const skills = (model.sections.skills as SkillEntry[] | undefined) ?? []
+  const skillsEntry = model.sections.skills
+    ? (model.sections.skills as SectionEntry)
+    : { name: 'skills', type: 'skills' as const, payload: [] }
+  const skills = skillsEntry.payload as SkillEntry[]
   const patchEntries = (next: typeof skills) =>
-    onChange({ ...model, sections: { ...model.sections, skills: next } })
+    onChange({ ...model, sections: { ...model.sections, skills: { ...skillsEntry, payload: next } } })
 
   return (
     <div className="step__fields">

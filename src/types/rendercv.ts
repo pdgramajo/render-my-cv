@@ -22,6 +22,16 @@ export interface RenderCv {
   sections: CvSections;
 }
 
+export interface SectionEntry {
+  name: string; // original section name (e.g. "Resumen", "Summary")
+  /** Canonical type: summary | experience | education | skills; unknown
+   * sections keep their raw lowercased key so renderers can skip them. */
+  type: string;
+  payload: SectionPayload;
+}
+
+export type CvSections = Record<string, SectionEntry>;
+
 export interface SocialNetwork {
   network: string;
   username: string;
@@ -33,10 +43,8 @@ export type SectionPayload =
   | string[] // summary: markdown paragraphs
   | ExperienceEntry[]
   | EducationEntry[]
-  | SkillEntry[];
-
-/** Ordered section map; unknown sections are skipped by the MVP renderer. */
-export interface CvSections extends Partial<Record<SectionName, SectionPayload>> {}
+  | SkillEntry[]
+  | Record<string, unknown>[]; // unknown sections keep their raw payload
 
 export interface ExperienceEntry {
   company: string;

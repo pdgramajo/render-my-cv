@@ -10,21 +10,37 @@ const baseModel: RenderCv = {
   email: 'j@example.com',
   socialNetworks: [{ network: 'github', username: 'johndoe' }],
   sections: {
-    summary: ['One paragraph.'],
-    experience: [
-      {
-        company: 'Acme',
-        position: 'Dev',
-        location: 'Remote',
-        startDate: '2022-01',
-        endDate: 'present',
-        highlights: ['Built things'],
-        boldKeywords: ['things'],
-      },
-      { company: 'Beta', position: 'Junior' },
-    ],
-    education: [{ institution: 'Uni', area: 'CS' }],
-    skills: [{ label: 'React', details: 'Hooks' }],
+    summary: {
+      name: 'summary',
+      type: 'summary',
+      payload: ['One paragraph.'],
+    },
+    experience: {
+      name: 'experience',
+      type: 'experience',
+      payload: [
+        {
+          company: 'Acme',
+          position: 'Dev',
+          location: 'Remote',
+          startDate: '2022-01',
+          endDate: 'present',
+          highlights: ['Built things'],
+          boldKeywords: ['things'],
+        },
+        { company: 'Beta', position: 'Junior' },
+      ],
+    },
+    education: {
+      name: 'education',
+      type: 'education',
+      payload: [{ institution: 'Uni', area: 'CS' }],
+    },
+    skills: {
+      name: 'skills',
+      type: 'skills',
+      payload: [{ label: 'React', details: 'Hooks' }],
+    },
   },
 }
 
@@ -158,9 +174,13 @@ describe('Wizard', () => {
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
         sections: expect.objectContaining({
-          experience: expect.arrayContaining([
-            expect.objectContaining({ company: 'Acme', endDate: undefined }),
-          ]),
+          experience: expect.objectContaining({
+            name: 'experience',
+            type: 'experience',
+            payload: expect.arrayContaining([
+              expect.objectContaining({ company: 'Acme', endDate: undefined }),
+            ]),
+          }),
         }),
       }),
     )
@@ -178,7 +198,13 @@ describe('Wizard', () => {
     fireEvent.change(paragraph, { target: { value: 'Rewritten.' } })
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({
-        sections: expect.objectContaining({ summary: ['Rewritten.'] }),
+        sections: expect.objectContaining({
+          summary: expect.objectContaining({
+            name: 'summary',
+            type: 'summary',
+            payload: ['Rewritten.'],
+          }),
+        }),
       }),
     )
   })

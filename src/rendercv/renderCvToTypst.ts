@@ -13,7 +13,7 @@ import type {
   EducationEntry,
   ExperienceEntry,
   RenderCv,
-  SectionPayload,
+  SectionEntry,
   SkillEntry,
 } from '../types/rendercv';
 import { renderError } from './errors';
@@ -26,16 +26,17 @@ import {
   summarySection,
 } from './fragments';
 
-function renderSection(name: string, payload: SectionPayload): string {
-  switch (name) {
+function renderSection(entry: SectionEntry): string {
+  // Use the type for rendering, but preserve the original name for the title
+  switch (entry.type) {
     case 'summary':
-      return summarySection(payload as string[]);
+      return summarySection(entry.name, entry.payload as string[]);
     case 'experience':
-      return experienceSection(payload as ExperienceEntry[]);
+      return experienceSection(entry.name, entry.payload as ExperienceEntry[]);
     case 'education':
-      return educationSection(payload as EducationEntry[]);
+      return educationSection(entry.name, entry.payload as EducationEntry[]);
     case 'skills':
-      return skillsSection(payload as SkillEntry[]);
+      return skillsSection(entry.name, entry.payload as SkillEntry[]);
     default:
       // Unknown sections are skipped by the MVP renderer (never fatal).
       return '';
@@ -51,9 +52,9 @@ function renderSection(name: string, payload: SectionPayload): string {
 export function renderCvToTypst(model: RenderCv): string {
   try {
     const parts: string[] = [preamble(model), header(model)];
-    const sections = model.sections as Record<string, SectionPayload>;
-    for (const [name, payload] of Object.entries(sections)) {
-      const section = renderSection(name, payload);
+    const sectionEntries = Object.values(model.sections) as SectionEntry[];
+    for (const entry of sectionEntries) {
+      const section = renderSection(entry);
       if (section.length > 0) {
         parts.push(section);
       }

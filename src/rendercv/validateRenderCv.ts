@@ -164,8 +164,46 @@ function validateEntryList(value: unknown, path: string, validator: (entry: Reco
   }
 }
 
+function normalizeSectionType(name: string): string {
+  const lower = name.toLowerCase().trim();
+  switch (lower) {
+    case 'summary':
+    case 'resumen':
+    case 'perfil':
+    case 'objective':
+    case 'objetivo':
+      return 'summary';
+    case 'experience':
+    case 'experiencia':
+    case 'work':
+    case 'trabajo':
+    case 'employment':
+    case 'laboral':
+      return 'experience';
+    case 'education':
+    case 'educación':
+    case 'educacion':
+    case 'formación':
+    case 'formacion':
+    case 'estudios':
+    case 'academic':
+      return 'education';
+    case 'skills':
+    case 'habilidades':
+    case 'competencias':
+    case 'tecnologías':
+    case 'tecnologias':
+    case 'idiomas':
+    case 'languages':
+      return 'skills';
+    default:
+      return lower;
+  }
+}
+
 function validateSection(name: string, payload: unknown): void {
-  if (name === 'summary') {
+  const type = normalizeSectionType(name);
+  if (type === 'summary') {
     if (!Array.isArray(payload)) {
       badType('cv.sections.summary', 'list', payload);
     }
@@ -176,16 +214,16 @@ function validateSection(name: string, payload: unknown): void {
     }
     return;
   }
-  if (name === 'experience') {
-    validateEntryList(payload, 'cv.sections.experience', validateExperienceEntry);
+  if (type === 'experience') {
+    validateEntryList(payload, `cv.sections.${name}`, validateExperienceEntry);
     return;
   }
-  if (name === 'education') {
-    validateEntryList(payload, 'cv.sections.education', validateEducationEntry);
+  if (type === 'education') {
+    validateEntryList(payload, `cv.sections.${name}`, validateEducationEntry);
     return;
   }
-  if (name === 'skills') {
-    validateEntryList(payload, 'cv.sections.skills', validateSkillEntry);
+  if (type === 'skills') {
+    validateEntryList(payload, `cv.sections.${name}`, validateSkillEntry);
     return;
   }
   // Unknown sections are skipped — never validated, never fatal (spec).

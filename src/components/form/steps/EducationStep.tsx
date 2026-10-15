@@ -1,4 +1,4 @@
-import type { EducationEntry } from '../../../types/rendercv'
+import type { EducationEntry, SectionEntry } from '../../../types/rendercv'
 import { EDUCATION_FIELDS, EDUCATION_LISTS } from '../../../form/schema'
 import { EditableList } from '../EditableList'
 import { EntryListRow } from '../EntryListRow'
@@ -6,9 +6,12 @@ import type { StepProps } from './shared'
 
 /** Step 4 — Education: degree entries with dates and highlights. */
 export function EducationStep({ model, onChange }: StepProps) {
-  const education = (model.sections.education as EducationEntry[] | undefined) ?? []
+  const educationEntry = model.sections.education
+    ? (model.sections.education as SectionEntry)
+    : { name: 'education', type: 'education' as const, payload: [] }
+  const education = educationEntry.payload as EducationEntry[]
   const patchEntries = (next: typeof education) =>
-    onChange({ ...model, sections: { ...model.sections, education: next } })
+    onChange({ ...model, sections: { ...model.sections, education: { ...educationEntry, payload: next } } })
 
   return (
     <div className="step__fields">
