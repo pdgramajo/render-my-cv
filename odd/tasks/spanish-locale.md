@@ -36,7 +36,7 @@ and were skipped → empty body in the PDF.
 - [x] T3 — Preserve original section name as Typst title (`== <original>`)
 - [x] T4 — Fix typecheck fallout (duplicate `CvSections`, missing imports, payload casts in tests)
 - [x] T5 — Spanish fixture + end-to-end test: Spanish YAML → PDF (`src/__fixtures__/spanish.yaml`, `src/__tests__/spanish-locale.test.ts`)
-- [ ] T6 — Work-unit commit on the feature branch
+- [x] T6 — Work-unit commit on the feature branch (`2907b5a`)
 
 ## Verification
 - `npm run test`: 12 files / 102 tests passed (2026-10-15).
