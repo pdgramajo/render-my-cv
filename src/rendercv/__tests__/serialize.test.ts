@@ -10,7 +10,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseRenderCvYaml, validateRenderCv } from '../../yaml/parse';
 import { renderCvToYaml } from '../serialize';
-import type { RenderCv } from '../../types/rendercv';
+import type { RenderCv, SectionEntry } from '../../types/rendercv';
 
 /** Raw fixture text inlined by Vite; no filesystem access, no node types. */
 import fixtureRaw from '../../__fixtures__/example.yaml?raw';
@@ -41,14 +41,18 @@ describe('renderCvToYaml (serializer)', () => {
     const model: RenderCv = {
       name: 'Ada',
       sections: {
-        experience: [
-          {
-            company: 'Fictitious Labs',
-            startDate: '2022-01',
-            endDate: 'present',
-            boldKeywords: ['React', 'TypeScript'],
-          },
-        ],
+        experience: {
+          name: 'experience',
+          type: 'experience',
+          payload: [
+            {
+              company: 'Fictitious Labs',
+              startDate: '2022-01',
+              endDate: 'present',
+              boldKeywords: ['React', 'TypeScript'],
+            },
+          ],
+        },
       },
     };
 
@@ -61,7 +65,16 @@ describe('renderCvToYaml (serializer)', () => {
   });
 
   it('omits optional fields that are undefined instead of writing empty keys', () => {
-    const model: RenderCv = { name: 'Ada', sections: { summary: ['Hi there.'] } };
+    const model: RenderCv = {
+      name: 'Ada',
+      sections: {
+        summary: {
+          name: 'summary',
+          type: 'summary',
+          payload: ['Hi there.'],
+        },
+      },
+    };
 
     const yaml = renderCvToYaml(model);
     expect(yaml).not.toMatch(/headline:/);
@@ -84,7 +97,11 @@ describe('renderCvToYaml (serializer)', () => {
 
   it('passes unknown sections through untouched', () => {
     const model = fixtureModel();
-    (model.sections as Record<string, unknown>).projects = [{ name: 'Side Project' }];
+    (model.sections as Record<string, SectionEntry>).projects = {
+      name: 'projects',
+      type: 'projects',
+      payload: [{ name: 'Side Project' }],
+    };
 
     const yaml = renderCvToYaml(model);
     expect(yaml).toMatch(/projects:/);

@@ -18,10 +18,26 @@ import fixtureRaw from './__fixtures__/example.yaml?raw'
 const compactBaseModel: RenderCv = {
   name: 'John Doe',
   sections: {
-    summary: ['One paragraph.'],
-    experience: [{ company: 'Acme', position: 'Dev' }],
-    education: [{ institution: 'Uni' }],
-    skills: [{ label: 'React' }],
+    summary: {
+      name: 'summary',
+      type: 'summary',
+      payload: ['One paragraph.'],
+    },
+    experience: {
+      name: 'experience',
+      type: 'experience',
+      payload: [{ company: 'Acme', position: 'Dev' }],
+    },
+    education: {
+      name: 'education',
+      type: 'education',
+      payload: [{ institution: 'Uni' }],
+    },
+    skills: {
+      name: 'skills',
+      type: 'skills',
+      payload: [{ label: 'React' }],
+    },
   },
 }
 

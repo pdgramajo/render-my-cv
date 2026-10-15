@@ -11,10 +11,10 @@
  */
 
 import type {
-  CvSections,
   EducationEntry,
   ExperienceEntry,
   RenderCv,
+  SectionEntry,
   SectionPayload,
   SkillEntry,
   SocialNetwork,
@@ -112,8 +112,46 @@ function convertSkills(raw: unknown): SkillEntry[] {
   });
 }
 
+function normalizeSectionType(name: string): string {
+  const lower = name.toLowerCase().trim();
+  switch (lower) {
+    case 'summary':
+    case 'resumen':
+    case 'perfil':
+    case 'objective':
+    case 'objetivo':
+      return 'summary';
+    case 'experience':
+    case 'experiencia':
+    case 'work':
+    case 'trabajo':
+    case 'employment':
+    case 'laboral':
+      return 'experience';
+    case 'education':
+    case 'educación':
+    case 'educacion':
+    case 'formación':
+    case 'formacion':
+    case 'estudios':
+    case 'academic':
+      return 'education';
+    case 'skills':
+    case 'habilidades':
+    case 'competencias':
+    case 'tecnologías':
+    case 'tecnologias':
+    case 'idiomas':
+    case 'languages':
+      return 'skills';
+    default:
+      return lower;
+  }
+}
+
 function convertSection(name: string, payload: unknown): SectionPayload {
-  switch (name) {
+  const type = normalizeSectionType(name);
+  switch (type) {
     case 'summary':
       // Markdown paragraphs; a non-array summary is dropped by conversion
       // (validation raises the structured error on the raw document).
@@ -155,6 +193,22 @@ export function convertToModel(parsed: unknown): RenderCv {
     socialNetworks = cv.social_networks as SocialNetwork[];
   }
 
+  const sectionEntries: SectionEntry[] = [];
+  for (const [originalName, payload] of Object.entries(sections)) {
+    const type = normalizeSectionType(originalName);
+    sectionEntries.push({
+      name: originalName,
+      type,
+      payload,
+    });
+  }
+
+  // Convert to Record<string, SectionEntry> for CvSections
+  const sectionsMap: Record<string, SectionEntry> = {};
+  for (const entry of sectionEntries) {
+    sectionsMap[entry.name] = entry;
+  }
+
   return {
     name,
     ...(cv !== null ? renamedString(cv, 'headline', 'headline') : {}),
@@ -162,6 +216,6 @@ export function convertToModel(parsed: unknown): RenderCv {
     ...(cv !== null ? renamedString(cv, 'email', 'email') : {}),
     ...(cv !== null ? renamedString(cv, 'phone', 'phone') : {}),
     ...(socialNetworks !== undefined ? { socialNetworks } : {}),
-    sections: sections as CvSections,
+    sections: sectionsMap,
   };
 }

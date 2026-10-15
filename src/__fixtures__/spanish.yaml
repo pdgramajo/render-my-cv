@@ -1,0 +1,62 @@
+# María González — CV fixture en español (test data only)
+#
+# RenderCV-compatible YAML con claves de sección en español:
+# `resumen`, `experiencia`, `educación`, `habilidades` + `locale.language`.
+#
+# ALL DATA HERE IS FICTIONAL — invented names, companies, and contact details.
+# Do not replace this fixture with real personal data (spec: fixture content
+# must stay fictional and is never imported by application code).
+#
+# This file is a TEST FIXTURE only — it is never imported by application code
+# (spec: fixture content is not hardcoded in application code).
+
+cv:
+  name: María González
+  headline: Ingeniera de Software
+  location: Buenos Aires
+  email: maria.gonzalez@example.com
+  phone: "+54 11 5555 0100"
+  locale:
+    language: spanish
+  social_networks:
+    - network: github
+      username: mgonzalez-fake
+    - network: linkedin
+      username: mgonzalez-fake
+  sections:
+    resumen:
+      - Ingeniera de software con 8 años de experiencia construyendo
+        productos web de punta a punta, desde la arquitectura hasta el despliegue.
+    experiencia:
+      - company: Laboratorios Ficticios
+        position: Ingeniera de Software Senior
+        location: Remoto
+        start_date: "2022-01"
+        end_date: present
+        highlights:
+          - Construcción de plataformas internas con *React*, *TypeScript* y *Node.js*.
+          - Liderazgo de migraciones desde sistemas heredados a arquitecturas modernas.
+      - company: Empresa Ejemplo
+        position: Ingeniera de Software
+        location: Remoto
+        start_date: "2018-06"
+        end_date: "2021-12"
+        highlights:
+          - Desarrollo de herramientas internas usadas en toda la empresa.
+          - Mentoring de ingenieros junior en pruebas y revisión de código.
+    educación:
+      - institution: Universidad Estatal Ficticia
+        area: Ciencias de la Computación
+        location: Remoto
+        start_date: "2014-03"
+        end_date: "2018-05"
+        highlights:
+          - Enfoque en sistemas distribuidos y arquitectura de software.
+    habilidades:
+      - label: React
+        details: Hooks, server components, gestión de estado
+      - label: TypeScript
+        details: Tipado estricto, diseño a nivel de tipos
+      - label: Node.js
+      - label: Python
+      - label: PostgreSQL

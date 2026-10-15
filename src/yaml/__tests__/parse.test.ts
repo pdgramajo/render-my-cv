@@ -10,7 +10,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseRenderCvYaml, validateRenderCv } from '../parse';
 import { PipelineError } from '../../types/pipeline';
-import type { RenderCv } from '../../types/rendercv';
+import type { ExperienceEntry, RenderCv, SectionEntry, SkillEntry } from '../../types/rendercv';
 
 /** Raw fixture text inlined by Vite; no filesystem access, no node types. */
 import fixtureRaw from '../../__fixtures__/example.yaml?raw';
@@ -85,14 +85,19 @@ describe('validateRenderCv', () => {
 
     expect(Object.keys(model.sections)).toEqual(['summary', 'experience', 'education', 'skills']);
 
-    const experience = model.sections.experience;
-    expect(experience).toHaveLength(2);
-    expect((experience as Array<{ company: string }>)[0].company).toBe('Fictitious Labs');
-    expect((experience as Array<{ company: string }>)[1].company).toBe('Example Corp');
+    const experienceEntry = model.sections.experience as SectionEntry;
+    expect(experienceEntry.name).toBe('experience');
+    expect(experienceEntry.type).toBe('experience');
+    expect(experienceEntry.payload).toHaveLength(2);
+    const experiencePayload = experienceEntry.payload as ExperienceEntry[];
+    expect(experiencePayload[0].company).toBe('Fictitious Labs');
+    expect(experiencePayload[1].company).toBe('Example Corp');
 
-    const skills = model.sections.skills;
-    expect(skills).toHaveLength(5);
-    expect((skills as Array<{ label: string }>)[0].label).toBe('React');
+    const skillsEntry = model.sections.skills as SectionEntry;
+    expect(skillsEntry.name).toBe('skills');
+    expect(skillsEntry.type).toBe('skills');
+    expect(skillsEntry.payload).toHaveLength(5);
+    expect((skillsEntry.payload as SkillEntry[])[0].label).toBe('React');
   });
 
   it('preserves section order from the source YAML', () => {
@@ -140,6 +145,10 @@ describe('validateRenderCv', () => {
     expect(model.phone).toBeUndefined();
     expect(model.socialNetworks).toBeUndefined();
     expect(Object.keys(model.sections)).toEqual(['summary']);
+    const summaryEntry = model.sections.summary as SectionEntry;
+    expect(summaryEntry.name).toBe('summary');
+    expect(summaryEntry.type).toBe('summary');
+    expect(summaryEntry.payload).toEqual(['Mathematician and writer.']);
   });
 
   it('tolerates empty lists in sections', () => {
@@ -158,9 +167,24 @@ describe('validateRenderCv', () => {
     const model = validateRenderCv(withEmptyLists);
 
     expect(model.name).toBe('Ada Lovelace');
-    expect(model.sections.summary).toEqual([]);
-    expect(model.sections.experience).toEqual([]);
-    expect(model.sections.education).toEqual([]);
-    expect(model.sections.skills).toEqual([]);
+    const summaryEntry = model.sections.summary as SectionEntry;
+    expect(summaryEntry.name).toBe('summary');
+    expect(summaryEntry.type).toBe('summary');
+    expect(summaryEntry.payload).toEqual([]);
+
+    const experienceEntry = model.sections.experience as SectionEntry;
+    expect(experienceEntry.name).toBe('experience');
+    expect(experienceEntry.type).toBe('experience');
+    expect(experienceEntry.payload).toEqual([]);
+
+    const educationEntry = model.sections.education as SectionEntry;
+    expect(educationEntry.name).toBe('education');
+    expect(educationEntry.type).toBe('education');
+    expect(educationEntry.payload).toEqual([]);
+
+    const skillsEntry = model.sections.skills as SectionEntry;
+    expect(skillsEntry.name).toBe('skills');
+    expect(skillsEntry.type).toBe('skills');
+    expect(skillsEntry.payload).toEqual([]);
   });
 });

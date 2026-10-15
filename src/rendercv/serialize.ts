@@ -15,10 +15,10 @@
 
 import { dump } from 'js-yaml';
 import type {
-  CvSections,
   EducationEntry,
   ExperienceEntry,
   RenderCv,
+  SectionEntry,
   SkillEntry,
   SocialNetwork,
 } from '../types/rendercv';
@@ -57,26 +57,26 @@ function skillToYaml(entry: SkillEntry): Record<string, unknown> {
   };
 }
 
-function convertSectionPayload(name: string, payload: unknown): unknown {
-  switch (name) {
+function convertSectionPayload(entry: SectionEntry): unknown {
+  switch (entry.type) {
     case 'summary':
-      return payload as string[];
+      return entry.payload as string[];
     case 'experience':
-      return (payload as ExperienceEntry[]).map(experienceToYaml);
+      return (entry.payload as ExperienceEntry[]).map(experienceToYaml);
     case 'education':
-      return (payload as EducationEntry[]).map(educationToYaml);
+      return (entry.payload as EducationEntry[]).map(educationToYaml);
     case 'skills':
-      return (payload as SkillEntry[]).map(skillToYaml);
+      return (entry.payload as SkillEntry[]).map(skillToYaml);
     default:
       // Unknown sections pass through untouched (raw-toggle territory).
-      return payload;
+      return entry.payload;
   }
 }
 
-function sectionsToYaml(sections: CvSections): Record<string, unknown> {
+function sectionsToYaml(sections: Record<string, SectionEntry>): Record<string, unknown> {
   const yaml: Record<string, unknown> = {};
-  for (const [name, payload] of Object.entries(sections)) {
-    yaml[name] = convertSectionPayload(name, payload);
+  for (const [name, entry] of Object.entries(sections)) {
+    yaml[name] = convertSectionPayload(entry);
   }
   return yaml;
 }
@@ -98,7 +98,7 @@ export function renderCvToYaml(model: RenderCv): string {
       ...(model.socialNetworks !== undefined
         ? { social_networks: model.socialNetworks.map(socialToYaml) }
         : {}),
-      sections: sectionsToYaml(model.sections),
+      sections: sectionsToYaml(model.sections as Record<string, SectionEntry>),
     },
   };
   // lineWidth -1: never fold long markdown summaries; keep the raw YAML

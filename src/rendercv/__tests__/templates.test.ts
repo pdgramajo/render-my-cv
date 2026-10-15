@@ -12,6 +12,7 @@ import type {
   EducationEntry,
   ExperienceEntry,
   RenderCv,
+  SectionEntry,
   SkillEntry,
 } from '../../types/rendercv';
 
@@ -24,15 +25,39 @@ function model(overrides: Partial<RenderCv> = {}): RenderCv {
 }
 
 function withExperience(entries: ExperienceEntry[]): RenderCv {
-  return model({ sections: { experience: entries } });
+  return model({
+    sections: {
+      experience: {
+        name: 'experience',
+        type: 'experience',
+        payload: entries,
+      },
+    },
+  });
 }
 
 function withEducation(entries: EducationEntry[]): RenderCv {
-  return model({ sections: { education: entries } });
+  return model({
+    sections: {
+      education: {
+        name: 'education',
+        type: 'education',
+        payload: entries,
+      },
+    },
+  });
 }
 
 function withSkills(entries: SkillEntry[]): RenderCv {
-  return model({ sections: { skills: entries } });
+  return model({
+    sections: {
+      skills: {
+        name: 'skills',
+        type: 'skills',
+        payload: entries,
+      },
+    },
+  });
 }
 
 describe('renderMarkdown (task 3.9)', () => {
@@ -116,10 +141,10 @@ describe('renderCvToTypst — case 3: fixture renders to expected Typst', () => 
   it('renders all four MVP sections in source order', () => {
     const output = renderCvToTypst(fixtureModel());
 
-    const summary = output.indexOf('== Summary');
-    const experience = output.indexOf('== Experience');
-    const education = output.indexOf('== Education');
-    const skills = output.indexOf('== Skills');
+    const summary = output.indexOf('== summary');
+    const experience = output.indexOf('== experience');
+    const education = output.indexOf('== education');
+    const skills = output.indexOf('== skills');
 
     expect(summary).toBeGreaterThan(-1);
     expect(experience).toBeGreaterThan(summary);
@@ -156,14 +181,22 @@ describe('renderCvToTypst — case 3: fixture renders to expected Typst', () => 
       model({
         name: 'Ada Lovelace',
         sections: {
-          summary: ['A summary.'],
-          projects: [{ name: 'Side Project', description: 'not rendered' }],
-        } as RenderCv['sections'],
+          summary: {
+            name: 'summary',
+            type: 'summary',
+            payload: ['A summary.'],
+          },
+          projects: {
+            name: 'projects',
+            type: 'projects',
+            payload: [{ name: 'Side Project', description: 'not rendered' }],
+          },
+        } as Record<string, SectionEntry>,
       }),
     );
 
-    expect(output).toContain('== Summary');
-    expect(output).not.toContain('== Projects');
+    expect(output).toContain('== summary');
+    expect(output).not.toContain('== projects');
     expect(output).not.toContain('Side Project');
   });
 });
@@ -253,14 +286,21 @@ describe('renderCvToTypst — case 5: list handling', () => {
 
   it('renders no heading at all for an empty section list', () => {
     const output = renderCvToTypst(withExperience([]));
-    expect(output).not.toContain('== Experience');
+    expect(output).not.toContain('== experience');
     expect(output).toContain('= Ada Lovelace');
   });
 
   it('renders no heading for empty summary/skills lists', () => {
-    const output = renderCvToTypst(model({ sections: { summary: [], skills: [] } }));
-    expect(output).not.toContain('== Summary');
-    expect(output).not.toContain('== Skills');
+    const output = renderCvToTypst(
+      model({
+        sections: {
+          summary: { name: 'summary', type: 'summary', payload: [] },
+          skills: { name: 'skills', type: 'skills', payload: [] },
+        },
+      }),
+    );
+    expect(output).not.toContain('== summary');
+    expect(output).not.toContain('== skills');
   });
 });
 
@@ -270,8 +310,16 @@ describe('renderCvToTypst — case 6: absent optional fields render clean', () =
       model({
         name: 'Ada Lovelace',
         sections: {
-          summary: ['Mathematician and writer.'],
-          experience: [{ company: 'Analytical Engine', position: 'Designer' }],
+          summary: {
+            name: 'summary',
+            type: 'summary',
+            payload: ['Mathematician and writer.'],
+          },
+          experience: {
+            name: 'experience',
+            type: 'experience',
+            payload: [{ company: 'Analytical Engine', position: 'Designer' }],
+          },
         },
       }),
     );
@@ -279,7 +327,7 @@ describe('renderCvToTypst — case 6: absent optional fields render clean', () =
     expect(output).not.toContain('#headline(');
     expect(output).not.toContain('#connections(');
     expect(output).not.toContain('phone');
-    expect(output).toContain('== Summary');
+    expect(output).toContain('== summary');
     expect(output).toContain('#summary[');
     expect(output).toContain('*Analytical Engine*');
   });

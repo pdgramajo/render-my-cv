@@ -12,6 +12,7 @@ import { describe, expect, it } from 'vitest';
 import { parseRenderCvYaml } from '../../yaml/parse';
 import { convertToModel } from '../model';
 import { validateRenderCv } from '../validateRenderCv';
+import type { ExperienceEntry, SectionEntry } from '../../types/rendercv';
 import {
   compileError,
   missingNameError,
@@ -53,43 +54,73 @@ describe('convertToModel (case 2)', () => {
   it('preserves section and entry order from the source YAML', () => {
     const model = convertToModel(parsedFixture());
 
-    const experience = model.sections.experience as unknown as Array<{ company: string }>;
-    expect(experience.map((entry) => entry.company)).toEqual(['Fictitious Labs', 'Example Corp']);
+    const experienceEntry = model.sections.experience as unknown as SectionEntry;
+    expect(experienceEntry.name).toBe('experience');
+    expect(experienceEntry.type).toBe('experience');
+    expect(experienceEntry.payload).toEqual([
+      {
+        company: 'Fictitious Labs',
+        position: 'Senior Software Engineer',
+        location: 'Remote',
+        startDate: '2022-01',
+        endDate: 'present',
+        highlights: [
+          'Building internal platforms using *React*, *TypeScript*, and *Node.js*.',
+          'Leading migrations from legacy codebases to modern, testable architectures.',
+        ],
+        boldKeywords: undefined,
+      },
+      {
+        company: 'Example Corp',
+        position: 'Software Engineer',
+        location: 'Remote',
+        startDate: '2018-06',
+        endDate: '2021-12',
+        highlights: [
+          'Delivered internal tooling used across the company.',
+          'Mentored junior engineers on testing and code review practices.',
+        ],
+        boldKeywords: undefined,
+      },
+    ]);
 
-    const skills = model.sections.skills as unknown as Array<{ label: string }>;
-    expect(skills.map((entry) => entry.label)).toEqual([
-      'React',
-      'TypeScript',
-      'Node.js',
-      'Python',
-      'PostgreSQL',
+    const skillsEntry = model.sections.skills as unknown as SectionEntry;
+    expect(skillsEntry.name).toBe('skills');
+    expect(skillsEntry.type).toBe('skills');
+    expect(skillsEntry.payload).toEqual([
+      { label: 'React', details: 'Hooks, server components, state management' },
+      { label: 'TypeScript', details: 'Strict typing, type-level design' },
+      { label: 'Node.js', details: undefined },
+      { label: 'Python', details: undefined },
+      { label: 'PostgreSQL', details: undefined },
     ]);
   });
 
   it('maps experience/education/skills entry fields', () => {
     const model = convertToModel(parsedFixture());
 
-    const first = model.sections.experience as unknown as Array<Record<string, unknown>>;
-    expect(first[0]).toMatchObject({
+    const experienceEntry = model.sections.experience as unknown as SectionEntry;
+    expect(experienceEntry.payload[0]).toMatchObject({
       company: 'Fictitious Labs',
       position: 'Senior Software Engineer',
       location: 'Remote',
       startDate: '2022-01',
       endDate: 'present',
     });
-    expect(first[0].highlights).toHaveLength(2);
-    expect(first[0].boldKeywords).toBeUndefined();
+    const experiencePayload = experienceEntry.payload as ExperienceEntry[];
+    expect(experiencePayload[0].highlights).toHaveLength(2);
+    expect(experiencePayload[0].boldKeywords).toBeUndefined();
 
-    const education = model.sections.education as unknown as Array<Record<string, unknown>>;
-    expect(education[0]).toMatchObject({
+    const educationEntry = model.sections.education as unknown as SectionEntry;
+    expect(educationEntry.payload[0]).toMatchObject({
       institution: 'Fictional State University',
       area: 'Computer Science',
       startDate: '2014-03',
       endDate: '2018-05',
     });
 
-    const skills = model.sections.skills as unknown as Array<Record<string, unknown>>;
-    expect(skills[2]).toEqual({ label: 'Node.js' });
+    const skillsEntry = model.sections.skills as unknown as SectionEntry;
+    expect(skillsEntry.payload[2]).toEqual({ label: 'Node.js' });
   });
 
   it('tolerates unknown sections without failing and keeps their order', () => {
@@ -340,10 +371,25 @@ describe('validateRenderCv (case 7)', () => {
     const model = validateRenderCv(document);
 
     expect(model.name).toBe('Ada Lovelace');
-    expect(model.sections.summary).toEqual([]);
-    expect(model.sections.experience).toEqual([]);
-    expect(model.sections.education).toEqual([]);
-    expect(model.sections.skills).toEqual([]);
+    const summaryEntry = model.sections.summary as SectionEntry;
+    expect(summaryEntry.name).toBe('summary');
+    expect(summaryEntry.type).toBe('summary');
+    expect(summaryEntry.payload).toEqual([]);
+
+    const experienceEntry = model.sections.experience as SectionEntry;
+    expect(experienceEntry.name).toBe('experience');
+    expect(experienceEntry.type).toBe('experience');
+    expect(experienceEntry.payload).toEqual([]);
+
+    const educationEntry = model.sections.education as SectionEntry;
+    expect(educationEntry.name).toBe('education');
+    expect(educationEntry.type).toBe('education');
+    expect(educationEntry.payload).toEqual([]);
+
+    const skillsEntry = model.sections.skills as SectionEntry;
+    expect(skillsEntry.name).toBe('skills');
+    expect(skillsEntry.type).toBe('skills');
+    expect(skillsEntry.payload).toEqual([]);
     expect(model.headline).toBeUndefined();
     expect(model.phone).toBeUndefined();
   });
